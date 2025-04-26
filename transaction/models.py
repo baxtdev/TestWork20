@@ -1,5 +1,6 @@
-from sqlalchemy import Column, Integer, String, DateTime, Enum,Float
+from sqlalchemy import Column, Integer, String, DateTime, Enum,Float,TIMESTAMP
 from sqlalchemy.orm import declarative_base
+from sqlalchemy.sql import func
 
 from datetime import datetime
 
@@ -12,4 +13,4 @@ class Transaction(Base):
     user_id = Column(Integer, index=True, nullable=False)
     amount = Column(Float,index=True,nullable=False)
     currency = Column(String,index=True,nullable=False)
-    timestamp = Column(DateTime,nullable=False,default=datetime.utcnow)
+    timestamp = Column(DateTime(timezone=True), nullable=False, server_default=func.now())

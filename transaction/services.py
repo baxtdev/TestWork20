@@ -21,7 +21,6 @@ async def list_transactions(db, page: int = 1, page_size: int = 10):
         .limit(page_size)  
         .offset(offset)   
     )
-    
     transactions = result.scalars().all()
     
     return transactions
