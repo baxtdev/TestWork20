@@ -4,10 +4,10 @@ from httpx import AsyncClient
 
 @pytest.mark.asyncio
 async def test_load_create_transactions():
-    async with AsyncClient(base_url="http://127.0.0.1:8000",headers={"Authorization":"ApiKey your-secret-api-key"}) as ac:
+    async with AsyncClient(base_url="http://127.0.0.1:8000",headers={"Autorization":"your_api_key"}) as ac:
         tasks = []
 
-        for i in range(1700,1900):
+        for i in range(2200,2300):
             payload = {
                 "transaction_id": i,
                 "user_id": 1000 + i,
@@ -20,4 +20,6 @@ async def test_load_create_transactions():
         responses = await asyncio.gather(*tasks)
 
     for response in responses:
+        print(response.text)
         assert response.status_code == 200
+

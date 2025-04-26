@@ -7,7 +7,7 @@ class TestTransactions:
     
     @pytest.mark.asyncio
     async def test_create_transaction(self):
-        async with AsyncClient(base_url="http://127.0.0.1:8000",headers={"Authorization":"ApiKey your-secret-api-key"}) as ac:
+        async with AsyncClient(base_url="http://127.0.0.1:8000",headers={"Autorization":"your_api_key"}) as ac:
             payload = {
                 "transaction_id": 1,
                 "user_id": 123,
@@ -23,7 +23,7 @@ class TestTransactions:
 
     @pytest.mark.asyncio
     async def test_create_transaction_duplicate(self):
-        async with AsyncClient(base_url="http://127.0.0.1:8000") as ac:
+        async with AsyncClient(base_url="http://127.0.0.1:8000",headers={"Autorization":"your_api_key"}) as ac:
             payload = {
                 "transaction_id": 1,
                 "user_id": 123,
@@ -37,7 +37,7 @@ class TestTransactions:
 
     @pytest.mark.asyncio
     async def test_create_transaction_invalid_payload(self):
-        async with AsyncClient(base_url="http://127.0.0.1:8000") as ac:
+        async with AsyncClient(base_url="http://127.0.0.1:8000",headers={"Autorization":"your_api_key"}) as ac:
             payload = {
                 "user_id": 123,
                 "amount": 100,
@@ -49,7 +49,7 @@ class TestTransactions:
 
     @pytest.mark.asyncio
     async def test_create_multiple_transactions(self):
-        async with AsyncClient(base_url="http://127.0.0.1:8000") as ac:
+        async with AsyncClient(base_url="http://127.0.0.1:8000",headers={"Autorization":"your_api_key"}) as ac:
             for i in range(2, 5):
                 payload = {
                     "transaction_id": i,
@@ -64,7 +64,7 @@ class TestTransactions:
 
     @pytest.mark.asyncio
     async def test_get_statistics(self):
-        async with AsyncClient(base_url="http://127.0.0.1:8000") as ac:
+        async with AsyncClient(base_url="http://127.0.0.1:8000",headers={"Autorization":"your_api_key"}) as ac:
             response = await ac.get("/statistics/")
         assert response.status_code == 200
         stats = response.json()
@@ -74,7 +74,7 @@ class TestTransactions:
 
     @pytest.mark.asyncio
     async def test_statistics_after_transactions(self):
-        async with AsyncClient(base_url="http://127.0.0.1:8000") as ac:
+        async with AsyncClient(base_url="http://127.0.0.1:8000",headers={"Autorization":"your_api_key"}) as ac:
             for i in range(5, 8):
                 await ac.post("/transactions/", json={
                     "transaction_id": i,
@@ -93,14 +93,14 @@ class TestTransactions:
 
     @pytest.mark.asyncio
     async def test_delete_all_transactions(self):
-        async with AsyncClient(base_url="http://127.0.0.1:8000") as ac:
+        async with AsyncClient(base_url="http://127.0.0.1:8000",headers={"Autorization":"your_api_key"}) as ac:
             response = await ac.delete("/transactions/")
         assert response.status_code == 200
         assert response.json()["detail"] in ["All transactions deleted", "Error deleting data"]
 
     @pytest.mark.asyncio
     async def test_delete_and_check_statistics(self):
-        async with AsyncClient(base_url="http://127.0.0.1:8000") as ac:
+        async with AsyncClient(base_url="http://127.0.0.1:8000",headers={"Autorization":"your_api_key"}) as ac:
             await ac.delete("/transactions/")
             response = await ac.get("/statistics/")
             stats = response.json()
@@ -110,7 +110,7 @@ class TestTransactions:
 
     @pytest.mark.asyncio
     async def test_delete_on_empty_db(self):
-        async with AsyncClient(base_url="http://127.0.0.1:8000") as ac:
+        async with AsyncClient(base_url="http://127.0.0.1:8000",headers={"Autorization":"your_api_key"}) as ac:
             await ac.delete("/transactions/") 
             response = await ac.delete("/transactions/") 
             assert response.status_code == 200

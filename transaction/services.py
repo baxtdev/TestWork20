@@ -13,7 +13,15 @@ async def delete_transactions(db):
     await db.commit()
     return True
 
-async def list_transactions(db):
-    result = await db.execute(select(Transaction))
+async def list_transactions(db, page: int = 1, page_size: int = 10):
+    offset = (page - 1) * page_size
+    
+    result = await db.execute(
+        select(Transaction)
+        .limit(page_size)  
+        .offset(offset)   
+    )
+    
     transactions = result.scalars().all()
+    
     return transactions

@@ -8,6 +8,7 @@ DATABASE_URL = os.environ.get('DATABASE_URL')
 REDIS_HOST = os.environ.get('REDIS_HOST')
 REDIS_PORT = os.environ.get('REDIS_PORT')
 REDIS_BROKER_URL =f"redis://{REDIS_HOST}:{REDIS_PORT}/0"
+API_KEY = "your_api_key" 
 
 redis_client = redis.StrictRedis(host='localhost', port=6379, db=0)
 

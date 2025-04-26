@@ -14,12 +14,13 @@ from .utils import calculate_transaction_statistics
 from .tasks import update_statistics_task
 from .conf import redis_client
 from .services import create_transaction,list_transactions,delete_transactions
+from .security import api_key_verification
 
 router = APIRouter()
 
 
 @router.post("/transactions/", response_model=TransactionResponse)
-async def transactions_post(transaction: TransactionBase, db: AsyncSession = Depends(get_db)):
+async def transactions_post(transaction: TransactionBase,api_key: str = Depends(api_key_verification),db: AsyncSession = Depends(get_db)):
     try:
         new_transaction = await create_transaction(transaction,db)
         
@@ -37,13 +38,13 @@ async def transactions_post(transaction: TransactionBase, db: AsyncSession = Dep
 
 
 @router.get('/transactions/',response_model=List[TransactionBase])
-async def get_transacctions(db: AsyncSession = Depends(get_db)):
-    transactions = await list_transactions(db)
+async def get_transacctions(Autorization: str = Depends(api_key_verification),db: AsyncSession = Depends(get_db),page: int = 1, page_size: int = 10):
+    transactions = await list_transactions(db,page,page_size)
     return transactions
 
 
 @router.delete("/transactions/")
-async def transactions_delete(db: AsyncSession = Depends(get_db)):
+async def transactions_delete(api_key: str = Depends(api_key_verification),db: AsyncSession = Depends(get_db)):
     result = await delete_transactions(db)
     if result:
         redis_client.delete('statistics')
@@ -56,7 +57,7 @@ async def transactions_delete(db: AsyncSession = Depends(get_db)):
 
 
 @router.get("/statistics/")
-async def get_statistics(db: AsyncSession = Depends(get_db)):
+async def get_statistics(api_key: str = Depends(api_key_verification),db: AsyncSession = Depends(get_db)):
     cached_stats = redis_client.get("statistics")
 
     if cached_stats:
