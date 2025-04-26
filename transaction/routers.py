@@ -5,6 +5,8 @@ from sqlalchemy import select
 
 from typing import List
 
+from contextlib import asynccontextmanager
+
 from .db import engine,get_db,AsyncSession
 from .models import Base,Transaction
 from .schemas import TransactionBase,TransactionResponse
@@ -14,12 +16,6 @@ from .conf import redis_client
 from .services import create_transaction,list_transactions,delete_transactions
 
 router = APIRouter()
-
-
-@router.on_event("startup")
-async def on_startup():
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
 
 
 @router.post("/transactions/", response_model=TransactionResponse)
